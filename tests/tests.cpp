@@ -824,6 +824,8 @@ static void write(const QString &path, const QString &content) {
         QCOMPARE(media.text.trimmed(), QString("# Flow"));
         QVERIFY(media.file.isEmpty());
         QVERIFY(slideProblems(source, "/tmp").isEmpty());
+        QVERIFY(slideProblems("```mermaid\n```\n", "/tmp").join(' ').contains("empty"));
+        QVERIFY(slideProblems(source + source, "/tmp").join(' ').contains("one media item"));
         // A mermaid fence shown inside another fence is only code.
         QVERIFY(parseMedia("````markdown\n```mermaid\nflowchart\n```\n````", "/tmp").diagram.isEmpty());
         QVERIFY(slideProblems(source + "\n![](photo.jpg)", "/tmp").join(' ').contains("one media item"));

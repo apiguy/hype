@@ -13,6 +13,7 @@ struct Media {
     double overlay = 0;
     QString text;
     QString diagram; // A ```mermaid fence, drawn where a picture would be
+    int diagramBlocks = 0;
 };
 QRectF mediaRect(const Media &media);
 QImage softenedImage(const QImage &image, const QSizeF &slideSize);

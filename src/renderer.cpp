@@ -188,7 +188,11 @@ QString withMediaDirectives(const QString &source, const QStringList &remove,
 static Media readMedia(const QString &source, const QString &base) {
     Media result;
     result.text = withoutComments(source);
-    takeDiagram(result.text, &result.diagram);
+    result.diagramBlocks = takeDiagram(result.text, &result.diagram);
+    if (result.diagramBlocks) {
+        QString remaining = result.text, extra;
+        result.diagramBlocks += takeDiagram(remaining, &extra);
+    }
     auto m = mediaRe.match(outsideCode(result.text));
     if (!m.hasMatch())
         return result;
@@ -347,9 +351,9 @@ QStringList slideProblems(const QString &source, const QString &base) {
         matches.next();
         ++count;
     }
-    if (count + !media.diagram.isEmpty() > 1)
+    if (count + media.diagramBlocks > 1)
         errors << "Use one media item per slide (combine artwork before importing)";
-    if (!media.diagram.isEmpty())
+    if (media.diagramBlocks)
         if (const QString problem = mermaidProblem(media.diagram); !problem.isEmpty())
             errors << problem;
     return errors;
